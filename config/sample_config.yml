@@ -1,0 +1,6 @@
+server:
+  port: '3000'
+
+slack:
+  botToken: 'xoxb-xxxxxxxxx-xxxxxxxxxx-xxxxxxxxxxxx'
+  signingSecret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
