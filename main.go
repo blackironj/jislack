@@ -8,20 +8,18 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
-
 	"github.com/blackironj/jislack/config"
 	"github.com/blackironj/jislack/slacktool"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	config.InitCfg("config/config.yaml")
 
 	router := gin.Default()
-	slackSlashGroup := router.Group("/jislack", slacktool.ValidateSlackCommandMiddleware())
-	{
-		slackSlashGroup.POST("/", slacktool.CommandHandler)
-	}
+
+	router.Use(slacktool.ValidateSlackCommandMiddleware())
+	router.POST("/jislack", slacktool.CommandHandler)
 
 	cfg := config.Get()
 	srv := &http.Server{

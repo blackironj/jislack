@@ -11,6 +11,10 @@ import (
 	"github.com/slack-go/slack"
 )
 
+const (
+	_version = "0.0.1"
+)
+
 func ValidateSlackCommandMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cfg := config.Get()
@@ -22,15 +26,15 @@ func ValidateSlackCommandMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if err := verifier.Ensure(); err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
 		r.Body = ioutil.NopCloser(io.TeeReader(r.Body, &verifier))
 		s, err := slack.SlashCommandParse(r)
 		if err != nil {
 			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		if err := verifier.Ensure(); err != nil {
+			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
@@ -48,7 +52,7 @@ func CommandHandler(c *gin.Context) {
 	switch op {
 	case "help":
 	case "version":
-		c.JSON(http.StatusOK, &slack.Msg{Text: "0.0.1"})
+		c.JSON(http.StatusOK, &slack.Msg{Text: "version: " + _version})
 	default:
 		c.JSON(http.StatusOK, &slack.Msg{Text: "invalid command"})
 	}
