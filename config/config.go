@@ -8,7 +8,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const _defaultCfgFilePath = "config/config.yaml"
+const (
+	_defaultCfgFilePath = "config/config.yaml"
+
+	_defaultServerPot = "3000"
+)
 
 var (
 	once sync.Once
@@ -38,6 +42,10 @@ func InitCfg(path string) {
 
 	if err := yaml.Unmarshal(b, &initialCfg); err != nil {
 		log.Fatal(err)
+	}
+
+	if initialCfg.Server.Port == "" {
+		initialCfg.Server.Port = _defaultServerPot
 	}
 
 	cfg = &initialCfg

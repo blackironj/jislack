@@ -4,6 +4,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/blackironj/jislack/config"
 	"github.com/gin-gonic/gin"
@@ -35,5 +36,19 @@ func ValidateSlackCommandMiddleware() gin.HandlerFunc {
 
 		c.Set(SlackCommandCtx, s)
 		c.Next()
+	}
+}
+
+func CommandHandler(c *gin.Context) {
+	s := c.MustGet(SlackCommandCtx).(slack.SlashCommand)
+
+	parsedCommand := strings.Split(s.Text, " ")
+	op := parsedCommand[0]
+
+	switch op {
+	case "help":
+	case "version":
+	default:
+		c.JSON(http.StatusOK, &slack.Msg{Text: "command not found"})
 	}
 }
