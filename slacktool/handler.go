@@ -48,7 +48,8 @@ func CommandHandler(c *gin.Context) {
 	switch op {
 	case "help":
 	case "version":
+		c.JSON(http.StatusOK, &slack.Msg{Text: "0.0.1"})
 	default:
-		c.JSON(http.StatusOK, &slack.Msg{Text: "command not found"})
+		c.JSON(http.StatusOK, &slack.Msg{Text: "invalid command"})
 	}
 }

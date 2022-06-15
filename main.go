@@ -18,11 +18,9 @@ func main() {
 	config.InitCfg("config/config.yaml")
 
 	router := gin.Default()
-	slackSlashGroup := router.Group("/slash", slacktool.ValidateSlackCommandMiddleware())
+	slackSlashGroup := router.Group("/jislack", slacktool.ValidateSlackCommandMiddleware())
 	{
-		slackSlashGroup.POST("/", func(c *gin.Context) {
-
-		})
+		slackSlashGroup.POST("/", slacktool.CommandHandler)
 	}
 
 	cfg := config.Get()
