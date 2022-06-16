@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/blackironj/jislack/config"
+	"github.com/blackironj/jislack/jiratool"
 	"github.com/blackironj/jislack/slacktool"
 	"github.com/gin-gonic/gin"
 )
@@ -16,12 +17,15 @@ import (
 func main() {
 	config.InitCfg("config/config.yaml")
 
+	cfg := config.Get()
+	jiratool.Init(cfg.Jira.User, cfg.Jira.ApiToken, cfg.Jira.BaseURL)
+	slacktool.Init(cfg.Slack.BotToken)
+
 	router := gin.Default()
 
 	router.Use(slacktool.ValidateSlackCommandMiddleware())
 	router.POST("/jislack", slacktool.CommandHandler)
 
-	cfg := config.Get()
 	srv := &http.Server{
 		Addr:    ":" + cfg.Server.Port,
 		Handler: router,

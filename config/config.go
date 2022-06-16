@@ -20,7 +20,9 @@ var (
 )
 
 type Config struct {
-	Slack  SlackData  `yaml:"slack"`
+	Slack SlackData `yaml:"slack"`
+	Jira  JiraData  `yaml:"jira"`
+
 	Server ServerData `yaml:"server"`
 }
 
@@ -31,6 +33,12 @@ type ServerData struct {
 type SlackData struct {
 	BotToken      string `yaml:"botToken"`
 	SigningSecret string `yaml:"signingSecret"`
+}
+
+type JiraData struct {
+	BaseURL  string `yaml:"baseUrl"`
+	ApiToken string `yaml:"apiToken"`
+	User     string `yaml:"user"`
 }
 
 func InitCfg(path string) {

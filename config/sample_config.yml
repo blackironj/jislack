@@ -4,3 +4,8 @@ server:
 slack:
   botToken: 'xoxb-xxxxxxxxx-xxxxxxxxxx-xxxxxxxxxxxx'
   signingSecret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+jira:
+  apiToken: 'xxxxxxxxxxxxxxxxxxxxxxxx'
+  baseUrl: 'https://jira.example.com'
+  user: 'test'

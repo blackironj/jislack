@@ -1,7 +1,6 @@
 package slacktool
 
 import (
-	"github.com/blackironj/jislack/config"
 	"github.com/slack-go/slack"
 )
 
@@ -11,6 +10,6 @@ const (
 
 var slackClient *slack.Client
 
-func InitSlackAPI(opts ...slack.Option) {
-	slackClient = slack.New(config.Get().Slack.BotToken, opts...)
+func Init(botToken string, opts ...slack.Option) {
+	slackClient = slack.New(botToken, opts...)
 }
