@@ -1,22 +1,59 @@
 package jiratool
 
 import (
+	"encoding/base64"
+	"fmt"
 	"log"
 
-	jira "github.com/andygrunwald/go-jira"
+	resty "github.com/go-resty/resty/v2"
 )
 
-var jiraClient *jira.Client
+var jiraClient *resty.Client
 
 func Init(username, apiToken, baseUrl string) {
-	tp := jira.BasicAuthTransport{
-		Username: username,
-		Password: apiToken,
-	}
+	auth := base64.StdEncoding.EncodeToString([]byte(username + ":" + apiToken))
+	fmt.Println(auth)
 
-	cli, err := jira.NewClient(tp.Client(), baseUrl)
+	client := resty.New()
+	client.SetHeader("Authorization", "Basic "+auth)
+	client.SetHeader("Content-Type", "application/json")
+	client.SetHeader("Accept", "application/json")
+
+	client.SetHostURL(baseUrl)
+
+	jiraClient = client
+}
+
+func GetUserAccountIdByEmail(email string) string {
+	resp, err := jiraClient.R().SetQueryParams(map[string]string{
+		"query": email,
+	}).Get("/rest/api/3/user/search")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return ""
 	}
-	jiraClient = cli
+	fmt.Println("user body : ", string(resp.Body()))
+	return ""
+}
+
+func CreateIssue(projKey, issueType, summary, description string) {
+	body := map[string]interface{}{
+		"fields": map[string]interface{}{
+			"project": map[string]interface{}{
+				"key": projKey,
+			},
+			"summary":     summary,
+			"description": description,
+			"issuetype": map[string]interface{}{
+				"name": issueType,
+			},
+		},
+	}
+	resp, err := jiraClient.R().SetBody(body).Post("/rest/api/3/issue")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(resp.Body()))
+
 }

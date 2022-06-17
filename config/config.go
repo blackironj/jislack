@@ -32,6 +32,7 @@ type ServerData struct {
 
 type SlackData struct {
 	BotToken      string `yaml:"botToken"`
+	AppToken      string `yaml:"appToken"`
 	SigningSecret string `yaml:"signingSecret"`
 }
 

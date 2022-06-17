@@ -1,0 +1,113 @@
+{
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Create JIRA ticket*"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Title:* {{ .TicketTitle }}"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Asignee*"
+			},
+			"accessory": {
+				"type": "users_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select a user",
+					"emoji": true
+				},
+				"action_id": "{{ .AssigneeActionId }}",
+				"value":"{{ .AssigneeActionId }}"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Reporter*"
+			},
+			"accessory": {
+				"type": "users_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select a user",
+					"emoji": true
+				},
+				"action_id": "{{ .ReporterActionId }}",
+				"value": "{{ .ReporterActionId }}"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Issue type*"
+			},
+			"accessory": {
+				"type": "static_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select an issue type",
+					"emoji": true
+				},
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Task",
+							"emoji": true
+						},
+						"value": "jira-issue-type-task"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Bug",
+							"emoji": true
+						},
+						"value": "jira-issue-type-bug"
+					}
+				],
+				"action_id": "{{ .IssueTypeActionId }}",
+				"value": "{{ .IssueTypeActionId }}"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"emoji": true,
+						"text": "Create"
+					},
+					"style": "primary",
+                    "action_id": "{{ .CreateJiraTicketActionId }}",
+					"value": "{{ .CreateJiraTicketActionId }}"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"emoji": true,
+						"text": "Deny"
+					},
+					"style": "danger",
+					"value": "create-jira-ticket-rejected"
+				}
+			]
+		}
+	]
+}

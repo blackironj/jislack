@@ -2,6 +2,7 @@ server:
   port: '3000'
 
 slack:
+  appToken: 'xapp...'
   botToken: 'xoxb-xxxxxxxxx-xxxxxxxxxx-xxxxxxxxxxxx'
   signingSecret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 

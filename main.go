@@ -1,53 +1,39 @@
 package main
 
 import (
-	"context"
-	"log"
-	"net/http"
-	"os/signal"
-	"syscall"
-	"time"
+	"os"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/slack-go/slack/socketmode"
 
 	"github.com/blackironj/jislack/config"
 	"github.com/blackironj/jislack/jiratool"
-	"github.com/blackironj/jislack/slacktool"
-	"github.com/gin-gonic/gin"
+	"github.com/blackironj/jislack/slacktool/controllers"
+	"github.com/blackironj/jislack/slacktool/drivers"
 )
 
 func main() {
-	config.InitCfg("config/config.yaml")
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
+	config.InitCfg("config/config.yml")
 	cfg := config.Get()
+
 	jiratool.Init(cfg.Jira.User, cfg.Jira.ApiToken, cfg.Jira.BaseURL)
-	slacktool.Init(cfg.Slack.BotToken)
+	client, err := drivers.ConnectToSlackViaSocketmode(cfg.Slack.AppToken, cfg.Slack.BotToken)
+	if err != nil {
+		log.Error().
+			Str("error", err.Error()).
+			Msg("Unable to connect to slack")
 
-	router := gin.Default()
-
-	router.Use(slacktool.ValidateSlackCommandMiddleware())
-	router.POST("/jislack", slacktool.CommandHandler)
-
-	srv := &http.Server{
-		Addr:    ":" + cfg.Server.Port,
-		Handler: router,
+		os.Exit(1)
 	}
 
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
+	// Inject Deps in router
+	socketmodeHandler := socketmode.NewSocketmodeHandler(client)
 
-	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			log.Fatalf("listen: %s\n", err)
-		}
-	}()
+	// Build Slack Slash Command in Golang Using Socket Mode
+	controllers.NewSlashCommandController(socketmodeHandler)
 
-	<-ctx.Done()
-	stop()
-	log.Println("shutting down server...")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("server forced to shutdown: ", err)
-	}
-	log.Println("Server exiting")
+	_ = socketmodeHandler.RunEventLoop()
 }
