@@ -14,6 +14,7 @@ const (
 	ReporterActionId = "repoter-action-id"
 
 	CreateJiraTicketActionId = "create-jira-ticket-action-id"
+	CancelJiraTicketActionId = "cancel-jira-ticket-action-id"
 
 	IssueTypeActionId = "issue-type-action-id"
 )
@@ -28,6 +29,7 @@ func CreateJiraInfoView(ticketTitle string) []slack.Block {
 		AssigneeActionId         string
 		ReporterActionId         string
 		CreateJiraTicketActionId string
+		CancelJiraTicketActionId string
 		IssueTypeActionId        string
 	}
 
@@ -36,6 +38,7 @@ func CreateJiraInfoView(ticketTitle string) []slack.Block {
 		AssigneeActionId:         AssigneeActionId,
 		ReporterActionId:         ReporterActionId,
 		CreateJiraTicketActionId: CreateJiraTicketActionId,
+		CancelJiraTicketActionId: CancelJiraTicketActionId,
 		IssueTypeActionId:        IssueTypeActionId,
 	}
 

@@ -102,10 +102,11 @@
 					"text": {
 						"type": "plain_text",
 						"emoji": true,
-						"text": "Deny"
+						"text": "cancel"
 					},
 					"style": "danger",
-					"value": "create-jira-ticket-rejected"
+					"action_id": "{{ .CancelJiraTicketActionId }}",
+					"value": "{{ .CancelJiraTicketActionId }}"
 				}
 			]
 		}

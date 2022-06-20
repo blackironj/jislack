@@ -50,10 +50,8 @@ func (c SlashCommandController) createJiraTicketView(evt *socketmode.Event, clt 
 	// create the view using block-kit
 	blocks := views.CreateJiraInfoView(title)
 
-	client := clt.Client
-
 	// Post ephemeral message
-	_, _, err := client.PostMessage(
+	_, _, err := clt.Client.PostMessage(
 		command.ChannelID,
 		slack.MsgOptionBlocks(blocks...),
 		slack.MsgOptionResponseURL(command.ResponseURL, slack.ResponseTypeEphemeral),
@@ -65,6 +63,8 @@ func (c SlashCommandController) createJiraTicketView(evt *socketmode.Event, clt 
 	}
 
 }
+
+func (c SlashCommandController) rejectTikcet()
 
 func (c SlashCommandController) createJiraTicket(evt *socketmode.Event, clt *socketmode.Client) {
 	// we need to cast our socketmode.Event into a Slash Command
