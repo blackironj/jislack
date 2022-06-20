@@ -22,6 +22,17 @@ const (
 //go:embed jiraAssets/*
 var slashCommandAssets embed.FS
 
+func CancelView() []slack.Block {
+	tpl := renderTemplate(slashCommandAssets, "jiraAssets/cancel.json", nil)
+
+	view := slack.Msg{}
+
+	str, _ := ioutil.ReadAll(&tpl)
+	_ = json.Unmarshal(str, &view)
+
+	return view.Blocks.BlockSet
+}
+
 func CreateJiraInfoView(ticketTitle string) []slack.Block {
 	// we need a stuct to hold template arguments
 	type args struct {

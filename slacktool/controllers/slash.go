@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"log"
-	"strings"
 
 	"github.com/blackironj/jislack/slacktool/views"
 
@@ -28,6 +27,11 @@ func NewSlashCommandController(eventhandler *socketmode.SocketmodeHandler) Slash
 	)
 
 	c.EventHandler.HandleInteractionBlockAction(
+		views.CancelJiraTicketActionId,
+		c.cancelCreatingJiraTikcet,
+	)
+
+	c.EventHandler.HandleInteractionBlockAction(
 		views.CreateJiraTicketActionId,
 		c.createJiraTicket,
 	)
@@ -43,10 +47,10 @@ func (c SlashCommandController) createJiraTicketView(evt *socketmode.Event, clt 
 		log.Printf("ERROR converting event to Slash Command: %v", ok)
 	}
 
-	title := strings.TrimSpace(command.Text)
 	// Make sure to respond to the server to avoid an error
 	clt.Ack(*evt.Request)
 
+	title := command.Text
 	// create the view using block-kit
 	blocks := views.CreateJiraInfoView(title)
 
@@ -59,12 +63,31 @@ func (c SlashCommandController) createJiraTicketView(evt *socketmode.Event, clt 
 
 	// Handle errors
 	if err != nil {
-		log.Printf("ERROR while sending message for /rocket: %v", err)
+		log.Printf("ERROR while sending message for /jislack: %v", err)
 	}
-
 }
 
-func (c SlashCommandController) rejectTikcet()
+func (c SlashCommandController) cancelCreatingJiraTikcet(evt *socketmode.Event, clt *socketmode.Client) {
+	// we need to cast our socketmode.Event into a Slash Command
+	interaction := evt.Data.(slack.InteractionCallback)
+
+	// Make sure to respond to the server to avoid an error
+	clt.Ack(*evt.Request)
+
+	blocks := views.CancelView()
+	// Post ephemeral message
+	_, _, err := clt.Client.PostMessage(
+		interaction.Container.ChannelID,
+		slack.MsgOptionBlocks(blocks...),
+		slack.MsgOptionResponseURL(interaction.ResponseURL, slack.ResponseTypeEphemeral),
+		slack.MsgOptionReplaceOriginal(interaction.ResponseURL),
+	)
+
+	// Handle errors
+	if err != nil {
+		log.Printf("ERROR while sending message for /jislack cancel view: %v", err)
+	}
+}
 
 func (c SlashCommandController) createJiraTicket(evt *socketmode.Event, clt *socketmode.Client) {
 	// we need to cast our socketmode.Event into a Slash Command
