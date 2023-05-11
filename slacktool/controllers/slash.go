@@ -9,6 +9,8 @@ import (
 	"github.com/slack-go/slack/socketmode"
 )
 
+const A = "A test"
+
 // We create a sctucture to let us use dependency injection
 type SlashCommandController struct {
 	EventHandler *socketmode.SocketmodeHandler
