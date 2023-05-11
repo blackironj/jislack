@@ -12,6 +12,7 @@ import (
 // We create a sctucture to let us use dependency injection
 type SlashCommandController struct {
 	EventHandler *socketmode.SocketmodeHandler
+	B_CODE       string
 }
 
 func NewSlashCommandController(eventhandler *socketmode.SocketmodeHandler) SlashCommandController {
